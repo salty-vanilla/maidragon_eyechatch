@@ -1,4 +1,8 @@
+# -*- coding: utf-8 -*-
+
 from PIL import Image, ImageFont, ImageDraw
+from images2gif import writeGif
+import argparse
 
 
 def get_bg_image(size=(1920, 1080), color=(251, 233, 61)):
@@ -58,8 +62,28 @@ def draw(canvas, msg, color="#000000", offset=0.2):
 
     return dst_imgs
 
-canvas = get_bg_image()
-imgs = draw(canvas, "for{}")
 
-for i, img in enumerate(imgs):
-    img.save(str(i) + ".png")
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('msg', metavar='msg', type=str,
+                        help='Message to draw.')
+    parser.add_argument('result_prefix', metavar='res_prefix', type=str,
+                        default="result",
+                        help='Prefix for the saved results.')
+    parser.add_argument('--duration', type=float, default=0.5, required=False,
+                        help='Duration of animation.')
+
+    args = parser.parse_args()
+    msg = args.msg
+    result_prefix = args.result_prefix
+    duration = args.duration
+
+    canvas = get_bg_image()
+    imgs = draw(canvas, msg)
+
+    writeGif(result_prefix + ".gif", imgs, duration=duration)
+
+
+if __name__ == "__main__":
+    main()
+
